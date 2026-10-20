@@ -17,7 +17,7 @@ const C = require('../assets/core.js');
 
 function makeEl(tag) {
   const el = {
-    tag, children: [], innerHTML: '', textContent: '', className: '', id: '',
+    tag, children: [], _html: '', textContent: '', className: '', id: '',
     style: {}, attributes: {}, value: '', disabled: false, hidden: false,
     tabIndex: -1, title: '', type: '', href: '', download: '',
     _listeners: {},
@@ -31,6 +31,11 @@ function makeEl(tag) {
     querySelectorAll() { return []; },
     remove() {}
   };
+  // browser semantics: setting innerHTML='' removes all children
+  Object.defineProperty(el, 'innerHTML', {
+    get() { return this._html; },
+    set(v) { this._html = v; if (v === '') this.children.length = 0; }
+  });
   return el;
 }
 const elements = {};
@@ -110,6 +115,16 @@ ok(keys.length > 0 && keys.every(k => monMap[k] === sunMap[k]), 'S8 week-start M
 
 // 7. counts render
 ok(/Shifts worked/.test(elements.counts.innerHTML) && /Days off/.test(elements.counts.innerHTML), 'S9 counts section rendered');
+
+// 7b. redesign features: preset cards, year glance, calculator
+ok(elements.presetCards.children.length === 8, 'S9b preset cards render all 8 patterns [' + elements.presetCards.children.length + ']');
+ok(elements.presetCards.children[0].innerHTML.includes('mini-cell'), 'S9c preset card shows the visual mini cycle');
+ok(elements.yearGlance.children.length === 12, 'S9d year-at-a-glance renders 12 months [' + elements.yearGlance.children.length + ']');
+const janCells = elements.yearGlance.children[0].children[1].children.filter(c => !c.className.includes('blank')).length;
+ok(janCells === 31, 'S9e year glance January has 31 day cells');
+ok(/Per week/.test(elements.wageResults.innerHTML) && /Next 365 days/.test(elements.wageResults.innerHTML), 'S9f hours & pay table renders');
+const avgW = parseFloat(elements.statAvgWeek.textContent);
+ok(avgW > 41 && avgW < 43, 'S9g 4on4off average weekly hours ≈ 42 [got ' + elements.statAvgWeek.textContent + ']');
 
 // 8. known golden lookup: rebuild with golden state via ?s=
 console.log('\nS10 golden-state render (anchor Mon 26 Feb 2024, day 1 = Day):');

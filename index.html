@@ -4,35 +4,66 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shift-Worker Rotation Calendar Generator — Am I Working That Day?</title>
-<meta name="description" content="Free rotation calendar for shift workers. Enter your repeating pattern once, anchored to a date you know for certain, and instantly see day shift, night shift or off for any future date. No account, no sign-up. Export to your calendar (.ics) or share a link.">
+<meta name="description" content="Free rotation calendar for shift workers. Enter your repeating pattern once, anchored to a date you know for certain, and instantly see day shift, night shift or off for any future date. Hours & pay calculator, year-at-a-glance, .ics export. No account, no sign-up.">
 <link rel="canonical" href="https://shiftcal-eta.vercel.app/">
-<style>/* inlined fallback if CSS fails to load */ body{font-family:system-ui,sans-serif}</style>
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 <a class="skip" href="#generator">Skip to the generator</a>
-<header class="site">
+
+<div class="topnav no-print">
   <div class="wrap">
-    <h1>Shift-Worker Rotation Calendar Generator</h1>
-    <p>For nurses, warehouse, retail, emergency services, manufacturing and hospitality workers — not employer scheduling software. Enter your repeating rotation once and answer, for any future date: <strong>am I working that day — day shift, night shift, or off?</strong> No account. No sign-up. Your answer in under 30 seconds.</p>
+    <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true">▦</span> ShiftCal</a>
+    <nav aria-label="Main">
+      <a href="#generator">Generator</a>
+      <a href="#patterns">Patterns</a>
+      <a href="#calculator">Hours &amp; pay</a>
+      <a href="#compare">Compare patterns</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <span class="nav-badge">Free · No sign-up</span>
+  </div>
+</div>
+
+<header class="hero no-print">
+  <div class="wrap">
+    <h1>Am I working <em>that day?</em></h1>
+    <p class="lede">The free rotation calendar for shift workers — nurses, warehouse, retail, emergency services, manufacturing, hospitality. Enter your repeating pattern once, anchored to a date you know for certain, and instantly see <strong>day shift, night shift, or off</strong> for any date. Not employer scheduling software: no account, no manager, no workplace.</p>
+    <ul class="badges">
+      <li><strong>Free</strong> forever</li>
+      <li><strong>No</strong> sign-up</li>
+      <li><strong>.ics</strong> calendar export</li>
+      <li><strong>Works offline</strong> once loaded</li>
+      <li><strong>Answer in</strong> under 30 seconds</li>
+    </ul>
   </div>
 </header>
+
 <main id="generator">
+<div class="tool-stack">
 
   <section class="card controls" aria-labelledby="h-step1">
-    <h2 id="h-step1">1 · Start from a preset (optional)</h2>
-    <p class="hint">Presets are editable starting templates, never locked truth — patterns vary by employer. Picking one just fills in the sequence below; change any of it.</p>
+    <span class="step-tag">Step 1 · Pattern</span>
+    <h2 id="h-step1">Start from a pattern — or build your own</h2>
+    <p class="hint">Patterns are editable starting templates, never locked truth — they vary by employer. Picking one just fills in the sequence below; change any of it.</p>
     <label for="presetSelect">Preset pattern</label>
     <select id="presetSelect">
       <option value="">— Choose a preset —</option>
     </select>
     <p id="presetNote" class="hint" role="status"></p>
-    <p class="hint">Preset pages: <a href="4-on-4-off.html">4 on 4 off calendar</a> · <a href="panama-2-2-3.html">2-2-3 / Panama</a> · <a href="dupont.html">DuPont</a> · <a href="continental.html">Continental</a> · <a href="nurse-shift-planner.html">Nurse shift planner</a></p>
+    <div class="legend" aria-label="Shift type legend">
+      <span style="background:#dbeafe">D · Day</span>
+      <span style="background:#ede9fe">N · Night</span>
+      <span style="background:#d1fae5">E · Early</span>
+      <span style="background:#fef3c7">L · Late</span>
+      <span style="background:#f1f5f9">O · Off</span>
+    </div>
   </section>
 
   <section class="card controls" aria-labelledby="h-step2">
-    <h2 id="h-step2">2 · Your repeating pattern</h2>
-    <p class="hint">Build the sequence that repeats forever. Tap a day to edit its type, label, colour and times. Add, remove and reorder days — any length from 1 to 62 days works.</p>
+    <span class="step-tag">Step 2 · Your cycle</span>
+    <h2 id="h-step2">Your repeating pattern, day by day</h2>
+    <p class="hint">This is the sequence that repeats forever. Tap a day to edit its type, label, colour and times. Add, remove and reorder days — any length from 1 to 62 days works.</p>
     <ol id="patternList" class="pat-list"></ol>
     <p id="patternMeta" class="hint" role="status"></p>
     <div class="addrow" aria-label="Add a day to the pattern">
@@ -80,19 +111,13 @@
         <button type="button" class="btn ghost" id="cancelEdit">Cancel</button>
       </div>
     </div>
-    <div class="legend" aria-label="Shift type legend">
-      <span style="background:#dbeafe">D · Day</span>
-      <span style="background:#ede9fe">N · Night</span>
-      <span style="background:#d1fae5">E · Early</span>
-      <span style="background:#fef3c7">L · Late</span>
-      <span style="background:#f1f5f9">O · Off</span>
-    </div>
   </section>
 
   <section class="card controls" aria-labelledby="h-step3">
-    <h2 id="h-step3">3 · Anchor it to a date you know for certain</h2>
+    <span class="step-tag">Step 3 · Anchor</span>
+    <h2 id="h-step3">Anchor it to a date you know for certain</h2>
     <p class="anchor-words">Pick a date you are 100% sure about. On that date, I work / I am the shift below, and that is day N of my pattern.</p>
-    <p class="hint">Do <strong>not</strong> guess a “start date”. Use a date from a real roster — yesterday, today, any day you are certain of. Anchor date + position in the cycle + your repeating sequence define every date, past and future.</p>
+    <p class="hint">Do <strong>not</strong> guess a “start date”. Use a date from a real roster — yesterday, today, any day you are certain of. Anchor date + position in the cycle + your repeating sequence define every date, past and future. This is why ShiftCal never drifts: there is no start date to misremember.</p>
     <div class="row cols-2">
       <div>
         <label for="anchorDate">Anchor date (a date you are 100% sure about)</label>
@@ -108,22 +133,23 @@
   </section>
 
   <section class="card controls" aria-labelledby="h-lookup">
-    <h2 id="h-lookup">4 · Check a date</h2>
+    <span class="step-tag">Step 4 · Check</span>
+    <h2 id="h-lookup">Check any date</h2>
     <div class="row cols-2">
       <div>
         <label for="lookupDate">Am I working on…?</label>
         <input type="date" id="lookupDate">
       </div>
       <div style="align-self:end">
-        <button type="button" class="btn" id="lookupBtn" style="width:100%">Check this date</button>
+        <button type="button" class="btn amber" id="lookupBtn" style="width:100%">Check this date</button>
       </div>
     </div>
     <div id="lookupResult" aria-live="polite"></div>
   </section>
 
-  <section class="card controls" aria-labelledby="h-view">
-    <h2 id="h-view">5 · View, counts, export &amp; share</h2>
-    <div class="row cols-3">
+  <section class="card" aria-labelledby="h-cal">
+    <h2 id="h-cal">Your rotation calendar</h2>
+    <div class="row cols-3 no-print">
       <div>
         <label for="monthsBack">Months back</label>
         <select id="monthsBack"><option value="0">0</option><option value="1">1</option><option value="3">3</option><option value="6">6</option><option value="12">12</option></select>
@@ -137,40 +163,114 @@
         <select id="weekStart"><option value="mon">Monday</option><option value="sun">Sunday</option></select>
       </div>
     </div>
-    <p class="hint">Your timezone, detected for display and calendar export: <strong id="tzDisplay">—</strong>. Changing timezone never changes which shift falls on a calendar date. Shift times are shown as wall-clock times; on the spring-forward night a 12-hour night shift is really 11 hours, and on the fall-back night 13 hours — the date and pattern position do not move.</p>
-    <h3>Counts</h3>
-    <p id="countsRange" class="hint"></p>
-    <dl id="counts" class="counts"></dl>
-    <div class="btnrow">
+    <p class="hint no-print">Your timezone, detected for display and calendar export: <strong id="tzDisplay">—</strong>. Changing timezone never changes which shift falls on a calendar date. Shift times are wall-clock times; on the spring-forward night a 12-hour night shift is really 11 hours, and on the fall-back night 13 hours — the date and pattern position do not move.</p>
+    <div id="calendar"></div>
+    <h3 class="no-print">Counts for the months shown</h3>
+    <p id="countsRange" class="hint no-print"></p>
+    <dl id="counts" class="counts no-print"></dl>
+    <div class="btnrow no-print">
       <button type="button" class="btn" id="icsBtn">⬇ Export .ics (add to my calendar)</button>
       <button type="button" class="btn secondary" id="shareBtn">🔗 Copy share link</button>
       <button type="button" class="btn secondary" id="printBtn">🖨 Print view</button>
       <button type="button" class="btn ghost" id="resetBtn">Reset everything</button>
     </div>
-    <p id="icsMsg" class="hint" role="status"></p>
-    <p id="shareMsg" class="hint" role="status"></p>
-    <p class="hint">No account and no server: your pattern is stored only in this browser (localStorage key <code>shiftcal.v1</code>) and in the share link itself. The tool works fully offline once loaded.</p>
+    <p id="icsMsg" class="hint no-print" role="status"></p>
+    <p id="shareMsg" class="hint no-print" role="status"></p>
+    <p class="hint no-print">No account and no server: your pattern is stored only in this browser (localStorage key <code>shiftcal.v1</code>) and in the share link itself.</p>
   </section>
 
-  <section class="card" aria-labelledby="h-cal">
-    <h2 id="h-cal">Your rotation calendar</h2>
-    <div id="calendar"></div>
+</div><!-- /tool-stack -->
+
+  <section id="calculator" class="card no-print" aria-labelledby="h-calc">
+    <div class="section-head" style="margin-top:0">
+      <h2 id="h-calc">Hours &amp; pay calculator</h2>
+      <p>Worked out from <em>your actual pattern</em> over the next 365 days — not from a guessed start date. Change the pattern or anchor above and these numbers follow.</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><div class="num" id="statAvgWeek">–</div><div class="lbl">Average hours per week</div></div>
+      <div class="stat"><div class="num" id="statYearHours">–</div><div class="lbl">Hours in the next 365 days</div></div>
+      <div class="stat"><div class="num" id="statWeekends">–</div><div class="lbl">Weekends with at least one shift</div></div>
+    </div>
+    <div class="row cols-2">
+      <div>
+        <label for="hoursPerShift">Hours per shift (used when a shift has no times set)</label>
+        <input type="number" id="hoursPerShift" min="0" max="24" step="0.25" value="12">
+      </div>
+      <div>
+        <label for="hourlyRate">Hourly rate (optional — for pay estimates)</label>
+        <input type="number" id="hourlyRate" min="0" step="0.01" placeholder="e.g. 15.50">
+      </div>
+    </div>
+    <div id="wageResults" aria-live="polite"></div>
+    <p class="hint">Shifts with start/end times use their real duration (a 19:00–07:00 night counts 12 hours). Pay figures are gross estimates before tax, overtime premiums and differentials.</p>
   </section>
 
-  <section class="card no-print" aria-labelledby="h-faq">
-    <h2 id="h-faq">Questions</h2>
-    <details><summary>Why do I need an “anchor date” instead of a start date?</summary><p>A start date is easy to misremember. An anchor is a single date you are 100% sure about — for example, “on Tuesday 14th I definitely worked a Night, and that was day 3 of my pattern”. From that one certain fact, the repeating sequence fixes every other date, forwards and backwards, forever.</p></details>
-    <details><summary>How are night shifts counted?</summary><p>A night shift belongs to the date it starts on. If you start at 19:00 on Tuesday and finish at 07:00 on Wednesday, that is Tuesday’s shift in the calendar, the counts, the lookup and the .ics export.</p></details>
+  <section class="card no-print" aria-labelledby="h-year">
+    <div class="section-head" style="margin-top:0">
+      <h2 id="h-year">Year at a glance — <span id="yearLabel">this year</span></h2>
+      <p>Your whole year on one screen. Each square is one day: the letter is the shift, the ringed square is your anchor date.</p>
+    </div>
+    <div id="yearGlance" class="year-grid"></div>
+  </section>
+
+  <section id="patterns" class="no-print" aria-labelledby="h-patterns">
+    <div class="section-head">
+      <h2 id="h-patterns">Popular shift patterns</h2>
+      <p>Ready-made rotations, shown exactly as they repeat. Tap one to load it into the generator — then make it yours. Every pattern here is a starting template: patterns vary by employer.</p>
+    </div>
+    <div id="presetCards" class="preset-cards"></div>
+    <p class="hint" style="margin-top:12px">Full guides: <a href="4-on-4-off.html">4 on 4 off calendar</a> · <a href="panama-2-2-3.html">2-2-3 / Panama</a> · <a href="dupont.html">DuPont</a> · <a href="continental.html">Continental</a> · <a href="nurse-shift-planner.html">Nurse shift planner</a></p>
+  </section>
+
+  <section class="no-print" aria-labelledby="h-how">
+    <div class="section-head">
+      <h2 id="h-how">How ShiftCal works</h2>
+    </div>
+    <div class="steps">
+      <div class="step-card"><div class="n">1</div><h3>Build your cycle once</h3><p>Pick a known pattern or click together your own repeating sequence of Day, Night, Early, Late and Off days — any length from 1 to 62 days.</p></div>
+      <div class="step-card"><div class="n">2</div><h3>Anchor one certain date</h3><p>Give one date you are 100% sure about and which day of the cycle it was. That single fact locks every past and future date into place — no fragile “start date”.</p></div>
+      <div class="step-card"><div class="n">3</div><h3>Plan your life around it</h3><p>Check any date in seconds, see your year at a glance, work out hours and pay, export to your phone calendar (.ics) or share your pattern with a link.</p></div>
+    </div>
+  </section>
+
+  <section id="compare" class="no-print" aria-labelledby="h-compare">
+    <div class="section-head">
+      <h2 id="h-compare">Common shift patterns compared</h2>
+      <p>Average hours assume the usual shift length for each pattern (12 hours, 8 for Continental). Your real hours depend on your employer's times — set them in the pattern above and use the calculator.</p>
+    </div>
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead><tr><th scope="col">Pattern</th><th scope="col">Shift length</th><th scope="col">Cycle</th><th scope="col">Avg hrs/week</th><th scope="col">Good</th><th scope="col">Tough</th></tr></thead>
+        <tbody>
+          <tr><td><a href="dupont.html">DuPont</a></td><td>12 hours</td><td>28 days</td><td>42</td><td>7 consecutive days off every cycle; good coverage</td><td>One 72-hour week; 4 consecutive nights</td></tr>
+          <tr><td><a href="panama-2-2-3.html">Panama / 2-2-3</a></td><td>12 hours</td><td>14 days</td><td>42</td><td>Never more than 3 shifts in a row; every other weekend is a 3-day weekend</td><td>Frequent day/night changes in the rotating version</td></tr>
+          <tr><td>Pitman</td><td>12 hours</td><td>28 days</td><td>42</td><td>Long stretch on one shift type — your body clock settles</td><td>Two straight weeks of nights in each cycle</td></tr>
+          <tr><td><a href="continental.html">Continental</a></td><td>8 hours</td><td>28 days</td><td>42</td><td>Fast forward rotation; max 3 nights in a row; less fatigue per shift</td><td>Early starts; frequent shift changes</td></tr>
+          <tr><td><a href="4-on-4-off.html">4 on / 4 off</a></td><td>12 hours</td><td>8 days</td><td>42</td><td>Simple and predictable; long 4-day breaks; weekends rotate fairly</td><td>4 long days in a row; breaks drift through the week</td></tr>
+          <tr><td>2 days, 2 nights, 4 off</td><td>12 hours</td><td>8 days</td><td>42</td><td>Four days off after only four shifts</td><td>Day-to-night flip inside every block</td></tr>
+          <tr><td>5 on / 2 off (rotating)</td><td>8 hours</td><td>14 days</td><td>40</td><td>A familiar 5-shift week; the weekend you work rotates</td><td>Off days move each week — harder to memorise</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="faq" class="card no-print" aria-labelledby="h-faq">
+    <h2 id="h-faq">Frequently asked questions</h2>
+    <details><summary>Why do I need an “anchor date” instead of a start date?</summary><p>A start date is easy to misremember — and every tool that relies on one silently drifts when you get it wrong. An anchor is a single date you are 100% sure about, for example “on Tuesday 14th I definitely worked a Night, and that was day 3 of my pattern”. From that one certain fact, the repeating sequence fixes every other date, forwards and backwards, forever.</p></details>
+    <details><summary>How are night shifts counted?</summary><p>A night shift belongs to the date it starts on. If you start at 19:00 on Tuesday and finish at 07:00 on Wednesday, that is Tuesday's shift in the calendar, the counts, the lookup and the .ics export.</p></details>
     <details><summary>Will daylight saving time break my calendar?</summary><p>No. Dates here are calculated as calendar days, not as 24-hour chunks of time, so the 23-hour spring day and the 25-hour autumn day cannot skip or double a date. Your shift <em>times</em> stay as wall-clock times; only the real length of that one night changes (11h in spring, 13h in autumn).</p></details>
     <details><summary>What does the .ics export do?</summary><p>It creates one calendar event per working shift for the months shown, with the correct timezone so events land at the right wall-clock time across daylight-saving changes. Import it into Google Calendar, Apple Calendar or Outlook. Days off are not exported.</p></details>
+    <details><summary>How many hours will I work, and what will I earn?</summary><p>Use the Hours &amp; pay calculator above — it counts your actual shifts over the next 365 days from your own pattern and anchor, including how many weekends you'll work at least one day of.</p></details>
+    <details><summary>Is this employer scheduling software?</summary><p>No. ShiftCal is for workers only: your pattern, your browser, no manager, no workplace data, no account. Always check against your official roster.</p></details>
     <details><summary>Is my data uploaded anywhere?</summary><p>No. There is no server and no account. Your pattern lives in your browser and in any share link you choose to copy.</p></details>
   </section>
 
   <p class="disclaimer" role="note">⚠ Always check against your official roster. Patterns vary by employer, and this tool works only from the pattern and anchor date you enter.</p>
 </main>
-<footer class="site">
+
+<footer class="site no-print">
   <div class="wrap">
-    <p><strong>ShiftCal</strong> — a free worker-side rotation calendar. Not employer scheduling software. No account, no manager, no workplace sign-up.</p>
+    <p><strong>ShiftCal</strong> — the free worker-side rotation calendar. Not employer scheduling software. No account, no manager, no workplace sign-up.</p>
     <p>Preset calendars: <a href="4-on-4-off.html">4 on / 4 off</a> · <a href="panama-2-2-3.html">Panama / 2-2-3</a> · <a href="dupont.html">DuPont</a> · <a href="continental.html">Continental</a> · <a href="nurse-shift-planner.html">Nurse shift planner</a></p>
     <p>Always check against your official roster.</p>
   </div>

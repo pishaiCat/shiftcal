@@ -8,6 +8,12 @@
   PASS  S5b anchor echo restates day 1 of 8 + shift for the anchor date
   PASS  S8 week-start Mon/Sun toggle: 122 cells, shift labels identical (grid alignment only)
   PASS  S9 counts section rendered
+  PASS  S9b preset cards render all 8 patterns [8]
+  PASS  S9c preset card shows the visual mini cycle
+  PASS  S9d year-at-a-glance renders 12 months [12]
+  PASS  S9e year glance January has 31 day cells
+  PASS  S9f hours & pay table renders
+  PASS  S9g 4on4off average weekly hours ≈ 42 [got 42.3]
 
 S10 golden-state render (anchor Mon 26 Feb 2024, day 1 = Day):
   PASS  S10 lookup 2024-03-05 = Day, day 1 of 8 (golden example holds in the UI)

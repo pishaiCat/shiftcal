@@ -327,8 +327,128 @@
     $('icsMsg').textContent = 'Downloaded .ics with one event per working shift in the shown range, in timezone ' + state.tz + '. Import it into Google Calendar, Apple Calendar or Outlook.';
   }
 
+  /* ---------------- preset cards ---------------- */
+  function applyPreset(key) {
+    if (!C.PRESETS[key]) return;
+    state.pattern = JSON.parse(JSON.stringify(C.PRESETS[key].pattern));
+    if (state.anchor.index >= state.pattern.length) state.anchor.index = 0;
+    closeEditor();
+    var sel = $('presetSelect'); if (sel) sel.value = key;
+    var note = $('presetNote');
+    if (note) note.textContent = C.PRESETS[key].blurb + ' ' + C.PRESETS[key].note + ' Presets are editable starting templates, never locked truth — patterns vary by employer.';
+    changed();
+    var list = $('patternList');
+    if (list && list.scrollIntoView) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function renderPresetCards() {
+    var wrap = $('presetCards');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    Object.keys(C.PRESETS).forEach(function (key) {
+      var p = C.PRESETS[key];
+      var card = document.createElement('article');
+      card.className = 'preset-card';
+      var working = p.pattern.filter(function (s) { return s.type !== 'Off'; }).length;
+      var seq = p.pattern.map(function (s) {
+        return '<span class="mini-cell" style="background:' + s.bg + '" title="' + escapeHtml(s.label) + '">' + escapeHtml(s.code) + '</span>';
+      }).join('');
+      card.innerHTML = '<h3>' + escapeHtml(p.name) + '</h3>' +
+        '<div class="mini-seq" aria-hidden="true">' + seq + '</div>' +
+        '<div class="meta">' + p.pattern.length + '-day cycle · ' + working + ' shifts · ' + (p.pattern.length - working) + ' off</div>' +
+        '<p>' + escapeHtml(p.blurb) + '</p>';
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'btn secondary';
+      btn.textContent = 'Load this pattern';
+      btn.setAttribute('aria-label', 'Load the ' + p.name + ' pattern into the generator');
+      btn.addEventListener('click', function () { applyPreset(key); });
+      card.appendChild(btn);
+      wrap.appendChild(card);
+    });
+  }
+
+  /* ---------------- hours & pay (next 365 days, via core counts only) ---------------- */
+  function minutesOf(t) { if (!t) return null; var p = t.split(':'); return parseInt(p[0], 10) * 60 + parseInt(p[1], 10); }
+  function shiftHours(sh, fallback) {
+    var s = minutesOf(sh.start), e = minutesOf(sh.end);
+    if (s === null || e === null) return fallback;
+    var dur = (e - s + 1440) % 1440;
+    return dur === 0 ? fallback : dur / 60;
+  }
+  function fmt(n, dec) { return n.toLocaleString('en-GB', { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 }); }
+  function renderStats() {
+    var avgEl = $('statAvgWeek'), yrEl = $('statYearHours'), weEl = $('statWeekends'), out = $('wageResults');
+    if (!avgEl || !yrEl || !weEl || !out) return;
+    var fallback = parseFloat(($('hoursPerShift') || {}).value) || 12;
+    var rate = parseFloat(($('hourlyRate') || {}).value) || 0;
+    var t = todayCivil();
+    var startSerial = C.daysFromCivil(t.y, t.m, t.d);
+    var endSerial = startSerial + 364;
+    var anchor = anchorObj();
+    var counts = C.countsForRange(startSerial, endSerial, state.pattern, anchor);
+    var totalHours = 0;
+    for (var s = startSerial; s <= endSerial; s++) {
+      var r = C.shiftForSerial(s, state.pattern, anchor);   // same single source of truth
+      if (C.isWorking(r.shift)) totalHours += shiftHours(r.shift, fallback);
+    }
+    var perWeek = totalHours * 7 / 365, perMonth = totalHours / 12;
+    avgEl.textContent = fmt(perWeek, 1);
+    yrEl.textContent = fmt(totalHours);
+    weEl.textContent = counts.weekendsWorked + ' of 52';
+    var html = '<table class="pay-table"><thead><tr><th scope="col">Period</th><th scope="col">Shifts</th><th scope="col">Hours</th>' +
+      (rate > 0 ? '<th scope="col">Gross pay</th>' : '') + '</tr></thead><tbody>';
+    function row(label, shifts, hours) {
+      return '<tr><td>' + label + '</td><td>' + fmt(shifts, 1) + '</td><td>' + fmt(hours, 1) + '</td>' +
+        (rate > 0 ? '<td>' + fmt(hours * rate, 2) + '</td>' : '') + '</tr>';
+    }
+    html += row('Per week (average)', counts.working * 7 / 365, perWeek);
+    html += row('Per month (average)', counts.working / 12, perMonth);
+    html += row('Next 365 days', counts.working, totalHours);
+    html += '</tbody></table>';
+    html += '<p class="hint">In the next 365 days: <strong>' + counts.working + ' shifts</strong>, <strong>' + counts.off + ' days off</strong>, and you work at least one day on <strong>' +
+      counts.weekendsWorked + ' of 52 weekends (' + Math.round(counts.weekendsWorked / 52 * 100) + '%)</strong>.</p>';
+    out.innerHTML = html;
+  }
+
+  /* ---------------- year at a glance ---------------- */
+  function renderYearGlance() {
+    var wrap = $('yearGlance');
+    if (!wrap) return;
+    var t = todayCivil();
+    var lbl = $('yearLabel'); if (lbl) lbl.textContent = String(t.y);
+    var anchor = anchorObj();
+    var anchorSerial = C.daysFromCivil(anchor.y, anchor.m, anchor.d);
+    var weekStartOffset = state.weekStart === 'mon' ? 1 : 0;
+    wrap.innerHTML = '';
+    for (var m = 1; m <= 12; m++) {
+      var box = document.createElement('div');
+      box.className = 'ym-month';
+      var h = document.createElement('h4');
+      h.textContent = MONTH_NAMES[m - 1];
+      box.appendChild(h);
+      var grid = document.createElement('div');
+      grid.className = 'ym-grid';
+      var firstSerial = C.daysFromCivil(t.y, m, 1);
+      var blanks = ((C.weekdayFromSerial(firstSerial) - weekStartOffset) % 7 + 7) % 7;
+      for (var b = 0; b < blanks; b++) {
+        var bl = document.createElement('span'); bl.className = 'ym-cell blank'; grid.appendChild(bl);
+      }
+      var dim = C.daysInMonth(t.y, m);
+      for (var d = 1; d <= dim; d++) {
+        var r = C.shiftForDate(t.y, m, d, state.pattern, anchor);   // same single source of truth
+        var cell = document.createElement('span');
+        cell.className = 'ym-cell' + (firstSerial + d - 1 === anchorSerial ? ' is-anchor' : '');
+        cell.style.background = r.shift.bg;
+        cell.textContent = r.shift.code;
+        cell.title = d + ' ' + MONTH_NAMES[m - 1] + ' ' + t.y + ': ' + r.shift.label;
+        grid.appendChild(cell);
+      }
+      box.appendChild(grid);
+      wrap.appendChild(box);
+    }
+  }
+
   /* ---------------- wiring ---------------- */
-  function changed() { persist(true); renderPattern(); renderCalendar(); renderLookup(); }
+  function changed() { persist(true); renderPattern(); renderCalendar(); renderLookup(); renderStats(); renderYearGlance(); }
   function init() {
     // presets
     var sel = $('presetSelect');
@@ -339,10 +459,7 @@
     });
     sel.addEventListener('change', function () {
       if (!sel.value) return;
-      state.pattern = JSON.parse(JSON.stringify(C.PRESETS[sel.value].pattern));
-      if (state.anchor.index >= state.pattern.length) state.anchor.index = 0;
-      closeEditor(); changed();
-      $('presetNote').textContent = C.PRESETS[sel.value].blurb + ' ' + C.PRESETS[sel.value].note + ' Presets are editable starting templates, never locked truth — patterns vary by employer.';
+      applyPreset(sel.value);
     });
     // quick add buttons
     document.querySelectorAll('[data-add]').forEach(function (b) {
@@ -390,7 +507,12 @@
       state = defaultState('4on4off'); closeEditor(); changed();
       $('weekStart').value = state.weekStart; $('monthsBack').value = '1'; $('monthsAhead').value = '3';
     });
-    renderPattern(); renderCalendar(); renderLookup();
+    // calculator inputs
+    var hp = $('hoursPerShift'), hr = $('hourlyRate');
+    if (hp) hp.addEventListener('input', renderStats);
+    if (hr) hr.addEventListener('input', renderStats);
+    renderPresetCards();
+    renderPattern(); renderCalendar(); renderLookup(); renderStats(); renderYearGlance();
     persist(false);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
