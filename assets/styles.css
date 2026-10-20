@@ -170,6 +170,11 @@ footer.site .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
 footer.site a{color:#9ec2ee}
 footer.site strong{color:#fff}
 
+/* ---------- ads (Adsterra) ---------- */
+.ad-slot{display:flex;flex-direction:column;align-items:center;gap:6px;margin:20px 0;max-width:100%;overflow:hidden}
+.ad-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.ad-slot iframe{max-width:100%}
+
 /* ---------- print ---------- */
 @media print{
   .topnav,.hero,footer.site,.no-print,.card.controls,.pat-ctrls,.addrow,.btnrow{display:none !important}

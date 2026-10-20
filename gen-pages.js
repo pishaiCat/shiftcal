@@ -142,11 +142,29 @@ ${seqVisual(preset.pattern)}
 <p class="hint">${p.variants}</p>
 <p class="hint">Patterns vary by employer — always check against your official roster.</p>
 </section>
+<div class="ad-slot no-print" aria-label="Advertisement">
+<span class="ad-label">Advertisement</span>
+<script>
+  atOptions = {
+    'key' : '11819102e4550e842b3a9b5faa2b2ace',
+    'format' : 'iframe',
+    'height' : 250,
+    'width' : 300,
+    'params' : {}
+  };
+</script>
+<script src="https://bauval.org/22/11819102e4550e842b3a9b5faa2b2ace"></script>
+</div>
 <section class="card no-print" id="tool" aria-labelledby="h-tool">
 <h2 id="h-tool">Your ${preset.name} calendar</h2>
 <p class="hint">The generator below is pre-loaded with the ${preset.name} pattern. Set your anchor date — one date you are 100% sure about — and the whole calendar snaps into place.</p>
 <div id="miniTool"><a class="btn" href="index.html?preset=${p.key}">Open the full generator with this pattern</a></div>
 </section>
+<div class="ad-slot no-print" aria-label="Advertisement">
+<span class="ad-label">Advertisement</span>
+<script async="async" data-cfasync="false" src="https://bauval.org/21/d32c7328865aaa55f226cabd70a63109"></script>
+<div id="container-d32c7328865aaa55f226cabd70a63109"></div>
+</div>
 <section class="card" aria-labelledby="h-faq-${slug}">
 <h2 id="h-faq-${slug}">Frequently asked questions</h2>
 ${p.faq.map(f => `<details><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join('')}
@@ -157,6 +175,8 @@ ${p.faq.map(f => `<details><summary>${f[0]}</summary><p>${f[1]}</p></details>`).
 <p><a href="index.html">← ShiftCal home — the free shift-worker rotation calendar</a></p>
 <p>More patterns: <a href="4-on-4-off.html">4 on 4 off</a> · <a href="panama-2-2-3.html">Panama / 2-2-3</a> · <a href="dupont.html">DuPont</a> · <a href="continental.html">Continental</a> · <a href="nurse-shift-planner.html">Nurse shift planner</a></p>
 </div></footer>
+<script data-cfasync="false" src="https://bauval.org/14/981ac940b11a3bc7457eb2677bfdafa4"></script>
+<script data-cfasync="false" src="https://abscloud.org/1/f13b258fe06711d9447c13b648a0f305"></script>
 </body>
 </html>`;
   fs.writeFileSync(path.join(__dirname, slug + '.html'), html);
