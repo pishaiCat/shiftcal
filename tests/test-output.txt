@@ -1,0 +1,102 @@
+
+A. Anchor
+  PASS  A1 anchor date returns anchor index 0  [got 0, expected 0]
+  PASS  A2 anchor date returns anchor shift (Day)  [got "Day", expected "Day"]
+  PASS  A3 anchor+1 -> index 1  [got 1, expected 1]
+  PASS  A4 anchor+cycleLength-1 (4 Mar) -> index 7  [got 7, expected 7]
+  PASS  A5 anchor+cycleLength (5 Mar) -> index 0  [got 0, expected 0]
+  PASS  A6 anchor+cycleLength shift equals anchor shift  [got "Day", expected "Day"]
+  PASS  A7 anchor-1 (pre-anchor, negative offset) -> index 7  [got 7, expected 7]
+  PASS  A8 anchor-cycleLength (18 Feb) -> index 0  [got 0, expected 0]
+  PASS  A9 anchor-cycleLength shift equals anchor shift  [got "Day", expected "Day"]
+  PASS  A10 anchor-365 days index matches double-mod formula (3)  [got 3, expected 3]
+
+B. Month ends — pattern advances by exactly 1
+  PASS  B1 serial advances by 1: 31 Jan -> 1 Feb  [got 1, expected 1]
+  PASS  B2 pattern index advances by 1 (mod 8): 31 Jan -> 1 Feb  [got 2, expected 2]
+  PASS  B3 serial advances by 1: 30 Apr -> 1 May  [got 1, expected 1]
+  PASS  B4 pattern index advances by 1 (mod 8): 30 Apr -> 1 May  [got 3, expected 3]
+  PASS  B5 serial advances by 1: 31 Dec -> 1 Jan next year  [got 1, expected 1]
+  PASS  B6 pattern index advances by 1 (mod 8): 31 Dec -> 1 Jan next year  [got 0, expected 0]
+  PASS  B7 civilFromDays rolls Dec 31 -> Jan 1 of next year  [got "2027-01-01", expected "2027-01-01"]
+
+C. Leap years
+  PASS  C1 Feb 2024 = 29 days  [got 29, expected 29]
+  PASS  C2 Feb 2025 = 28 days  [got 28, expected 28]
+  PASS  C3 Feb 2000 = 29 days (divisible by 400)  [got 29, expected 29]
+  PASS  C4 Feb 2100 = 28 days (divisible by 100, not 400)  [got 28, expected 28]
+  PASS  C5 28 Feb 2024 + 1 = 29 Feb 2024  [got "2024-02-29", expected "2024-02-29"]
+  PASS  C6 29 Feb 2024 + 1 = 1 Mar 2024  [got "2024-03-01", expected "2024-03-01"]
+  PASS  C7 28 Feb 2025 + 1 = 1 Mar 2025 (no 29th)  [got "2025-03-01", expected "2025-03-01"]
+  PASS  C8 parseISODate accepts 2024-02-29
+  PASS  C9 parseISODate rejects 2100-02-29  [got null, expected null]
+  PASS  C10 parseISODate rejects 2025-02-29  [got null, expected null]
+
+D. DST continuity — index advances by exactly 1 every day, no skips/doubles
+  PASS  D1 London spring forward (Sun 29 Mar 2026) — iterated 5 distinct civil days  [got 5, expected 5]
+  PASS  D1 London spring forward (Sun 29 Mar 2026) — pattern index advanced by exactly 1 (mod 8) on every step
+  PASS  D2 London fall back (Sun 25 Oct 2026) — iterated 5 distinct civil days  [got 5, expected 5]
+  PASS  D2 London fall back (Sun 25 Oct 2026) — pattern index advanced by exactly 1 (mod 8) on every step
+  PASS  D3 US spring forward (Sun 8 Mar 2026) — iterated 5 distinct civil days  [got 5, expected 5]
+  PASS  D3 US spring forward (Sun 8 Mar 2026) — pattern index advanced by exactly 1 (mod 8) on every step
+  PASS  D4 US fall back (Sun 1 Nov 2026) — iterated 5 distinct civil days  [got 5, expected 5]
+  PASS  D4 US fall back (Sun 1 Nov 2026) — pattern index advanced by exactly 1 (mod 8) on every step
+
+E. GOLDEN EXAMPLE — [D,D,D,D,O,O,O,O], anchor Mon 26 Feb 2024, position = first Day
+  PASS  E0 26 Feb 2024 really is a Monday (weekday=1)  [got 1, expected 1]
+  PASS  E1 2024-02-26 = Day  [got "Day", expected "Day"]
+  PASS  E2 2024-02-27 = Day  [got "Day", expected "Day"]
+  PASS  E3 2024-02-28 = Day  [got "Day", expected "Day"]
+  PASS  E4 2024-02-29 = Day  [got "Day", expected "Day"]
+  PASS  E5 2024-03-01 = Off  [got "Off", expected "Off"]
+  PASS  E6 2024-03-02 = Off  [got "Off", expected "Off"]
+  PASS  E7 2024-03-03 = Off  [got "Off", expected "Off"]
+  PASS  E8 2024-03-04 = Off  [got "Off", expected "Off"]
+  PASS  E9 2024-03-05 = Day  [got "Day", expected "Day"]
+
+F. Property test — walk 5 years day by day
+  PASS  F1 walked exactly 1826 days (2023-01-01 to 2028-01-01, incl. leap day 2024)  [got 1826, expected 1826]
+  PASS  F2 consecutive serials differ by exactly 1
+  PASS  F3 weekday advances by 1 (mod 7) every day for 5 years
+  PASS  F4 pattern index advances by 1 (mod 28) every day for 5 years
+  PASS  F5 civilFromDays -> daysFromCivil round-trips every serial
+
+G. .ics snapshot
+  PASS  G1 event count (16) = working days from shiftForDate (16)  [got 16, expected 16]
+  PASS  G2 CRLF line endings present
+  PASS  G3 no bare LF line endings
+  PASS  G4 every folded line is <= 75 octets
+  PASS  G5 every event has a DTSTART and a DTEND  [got 16, expected 16]
+  PASS  G6 every DTEND is after its DTSTART
+  PASS  G7 night event starts 19:00 on its date and ends 07:00 the NEXT day
+  PASS  G8 every event has a UID
+  PASS  G9 DTSTAMP in UTC (Z suffix) present
+  PASS  G10 no RRULE used (one VEVENT per shift)
+  PASS  G11 DST-week event count matches shiftForDate (3)  [got 3, expected 3]
+  PASS  G12 no-times shift exports as all-day VALUE=DATE with next-day DTEND
+  PASS  G13 ICS escaping of comma, semicolon, backslash, newline  [got "a\\,b\\;c\\\\d\\ne", expected "a\\,b\\;c\\\\d\\ne"]
+
+H. Week-start setting changes grid alignment ONLY
+  PASS  H1 sampled exactly 60 dates  [got 60, expected 60]
+  PASS  H2 shiftForDate results identical regardless of week-start grid offset
+  PASS  H3 shiftForDate signature has no week-start parameter (grid-only concern)
+
+Presets sanity
+  PASS  P1 4on4off length 8  [got 8, expected 8]
+  PASS  P2 2D2N4off length 8  [got 8, expected 8]
+  PASS  P3 Panama length 14  [got 14, expected 14]
+  PASS  P4 DuPont length 28  [got 28, expected 28]
+  PASS  P5 DuPont works 14 of 28  [got 14, expected 14]
+  PASS  P6 DuPont final 7 days are all Off (the 7-day break)  [got true, expected true]
+  PASS  P7 Continental length 28  [got 28, expected 28]
+  PASS  P8 Pitman full cycle length 28 (14 days + 14 nights swap)  [got 28, expected 28]
+  PASS  P9 5on2off rotating-weekend length 14  [got 14, expected 14]
+  PASS  P10 5on2off works 10 of 14 (5 per week)  [got 10, expected 10]
+  PASS  P11 state -> URL encoding -> decode round-trips exactly
+  PASS  P12 corrupt share code is rejected, not crashed  [got null, expected null]
+  PASS  P13 1-day pattern works far in the future  [got "Night", expected "Night"]
+  PASS  P14 62-day pattern builds  [got 62, expected 62]
+
+========================================
+TOTAL: 80 passed, 0 failed
+ALL TESTS PASSED

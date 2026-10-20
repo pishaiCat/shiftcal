@@ -1,0 +1,16 @@
+  PASS  S1 pattern list renders 8 items
+  PASS  S2 default pattern is D,D,D,D,O,O,O,O
+  PASS  S3 calendar renders 4 months (1 back + 3 ahead) [4]
+  PASS  S4 first month has 30 day cells
+  PASS  S5 every cell shows colour code + text label
+  PASS  S6 exactly one anchor-marked day in the grid
+  PASS  S7 lookup shows shift + pattern position
+  PASS  S5b anchor echo restates day 1 of 8 + shift for the anchor date
+  PASS  S8 week-start Mon/Sun toggle: 122 cells, shift labels identical (grid alignment only)
+  PASS  S9 counts section rendered
+
+S10 golden-state render (anchor Mon 26 Feb 2024, day 1 = Day):
+  PASS  S10 lookup 2024-03-05 = Day, day 1 of 8 (golden example holds in the UI)
+  PASS  S11 5 Mar lookup does not claim night times (Day shift 07:00-19:00 shown or omitted cleanly)
+
+SMOKE TESTS ALL PASSED

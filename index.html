@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shift-Worker Rotation Calendar Generator — Am I Working That Day?</title>
+<meta name="description" content="Free rotation calendar for shift workers. Enter your repeating pattern once, anchored to a date you know for certain, and instantly see day shift, night shift or off for any future date. No account, no sign-up. Export to your calendar (.ics) or share a link.">
+<link rel="canonical" href="https://example.com/">
+<style>/* inlined fallback if CSS fails to load */ body{font-family:system-ui,sans-serif}</style>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<a class="skip" href="#generator">Skip to the generator</a>
+<header class="site">
+  <div class="wrap">
+    <h1>Shift-Worker Rotation Calendar Generator</h1>
+    <p>For nurses, warehouse, retail, emergency services, manufacturing and hospitality workers — not employer scheduling software. Enter your repeating rotation once and answer, for any future date: <strong>am I working that day — day shift, night shift, or off?</strong> No account. No sign-up. Your answer in under 30 seconds.</p>
+  </div>
+</header>
+<main id="generator">
+
+  <section class="card controls" aria-labelledby="h-step1">
+    <h2 id="h-step1">1 · Start from a preset (optional)</h2>
+    <p class="hint">Presets are editable starting templates, never locked truth — patterns vary by employer. Picking one just fills in the sequence below; change any of it.</p>
+    <label for="presetSelect">Preset pattern</label>
+    <select id="presetSelect">
+      <option value="">— Choose a preset —</option>
+    </select>
+    <p id="presetNote" class="hint" role="status"></p>
+    <p class="hint">Preset pages: <a href="4-on-4-off.html">4 on 4 off calendar</a> · <a href="panama-2-2-3.html">2-2-3 / Panama</a> · <a href="dupont.html">DuPont</a> · <a href="continental.html">Continental</a> · <a href="nurse-shift-planner.html">Nurse shift planner</a></p>
+  </section>
+
+  <section class="card controls" aria-labelledby="h-step2">
+    <h2 id="h-step2">2 · Your repeating pattern</h2>
+    <p class="hint">Build the sequence that repeats forever. Tap a day to edit its type, label, colour and times. Add, remove and reorder days — any length from 1 to 62 days works.</p>
+    <ol id="patternList" class="pat-list"></ol>
+    <p id="patternMeta" class="hint" role="status"></p>
+    <div class="addrow" aria-label="Add a day to the pattern">
+      <button type="button" class="btn secondary" data-add="Day">+ Day</button>
+      <button type="button" class="btn secondary" data-add="Night">+ Night</button>
+      <button type="button" class="btn secondary" data-add="Early">+ Early</button>
+      <button type="button" class="btn secondary" data-add="Late">+ Late</button>
+      <button type="button" class="btn secondary" data-add="Off">+ Off</button>
+      <button type="button" class="btn secondary" data-add="Custom">+ Custom</button>
+    </div>
+    <div id="editor" class="editor" hidden>
+      <h3 id="editTitle">Edit day</h3>
+      <div class="row cols-3">
+        <div>
+          <label for="fType">Shift type</label>
+          <select id="fType">
+            <option>Day</option><option>Night</option><option>Early</option><option>Late</option><option>Off</option><option>Custom</option>
+          </select>
+        </div>
+        <div>
+          <label for="fLabel">Label (always shown — never colour alone)</label>
+          <input type="text" id="fLabel" maxlength="24">
+        </div>
+        <div>
+          <label for="fCode">Short code (1–2 letters)</label>
+          <input type="text" id="fCode" maxlength="2">
+        </div>
+      </div>
+      <div class="row cols-3">
+        <div>
+          <label for="fStart">Start time (leave blank for all-day)</label>
+          <input type="time" id="fStart">
+        </div>
+        <div>
+          <label for="fEnd">End time</label>
+          <input type="time" id="fEnd">
+        </div>
+        <div>
+          <label for="fColor">Colour</label>
+          <input type="color" id="fColor">
+        </div>
+      </div>
+      <div class="btnrow">
+        <button type="button" class="btn" id="saveEdit">Save day</button>
+        <button type="button" class="btn ghost" id="cancelEdit">Cancel</button>
+      </div>
+    </div>
+    <div class="legend" aria-label="Shift type legend">
+      <span style="background:#dbeafe">D · Day</span>
+      <span style="background:#ede9fe">N · Night</span>
+      <span style="background:#d1fae5">E · Early</span>
+      <span style="background:#fef3c7">L · Late</span>
+      <span style="background:#f1f5f9">O · Off</span>
+    </div>
+  </section>
+
+  <section class="card controls" aria-labelledby="h-step3">
+    <h2 id="h-step3">3 · Anchor it to a date you know for certain</h2>
+    <p class="anchor-words">Pick a date you are 100% sure about. On that date, I work / I am the shift below, and that is day N of my pattern.</p>
+    <p class="hint">Do <strong>not</strong> guess a “start date”. Use a date from a real roster — yesterday, today, any day you are certain of. Anchor date + position in the cycle + your repeating sequence define every date, past and future.</p>
+    <div class="row cols-2">
+      <div>
+        <label for="anchorDate">Anchor date (a date you are 100% sure about)</label>
+        <input type="date" id="anchorDate">
+      </div>
+      <div>
+        <label for="anchorPos">On that date, that is…</label>
+        <select id="anchorPos"></select>
+      </div>
+    </div>
+    <p id="anchorEcho" class="hint" role="status"></p>
+    <p class="note"><strong>Night-shift rule:</strong> a night shift belongs to the calendar date it <em>starts</em> on. A night shift 19:00 Tuesday → 07:00 Wednesday is <strong>Tuesday's</strong> shift. Every view, count, lookup and calendar export on this page follows this one rule.</p>
+  </section>
+
+  <section class="card controls" aria-labelledby="h-lookup">
+    <h2 id="h-lookup">4 · Check a date</h2>
+    <div class="row cols-2">
+      <div>
+        <label for="lookupDate">Am I working on…?</label>
+        <input type="date" id="lookupDate">
+      </div>
+      <div style="align-self:end">
+        <button type="button" class="btn" id="lookupBtn" style="width:100%">Check this date</button>
+      </div>
+    </div>
+    <div id="lookupResult" aria-live="polite"></div>
+  </section>
+
+  <section class="card controls" aria-labelledby="h-view">
+    <h2 id="h-view">5 · View, counts, export &amp; share</h2>
+    <div class="row cols-3">
+      <div>
+        <label for="monthsBack">Months back</label>
+        <select id="monthsBack"><option value="0">0</option><option value="1">1</option><option value="3">3</option><option value="6">6</option><option value="12">12</option></select>
+      </div>
+      <div>
+        <label for="monthsAhead">Months ahead</label>
+        <select id="monthsAhead"><option value="1">1</option><option value="3">3</option><option value="6">6</option><option value="12">12</option></select>
+      </div>
+      <div>
+        <label for="weekStart">Week starts on (grid alignment only — it never changes which shift falls on a date)</label>
+        <select id="weekStart"><option value="mon">Monday</option><option value="sun">Sunday</option></select>
+      </div>
+    </div>
+    <p class="hint">Your timezone, detected for display and calendar export: <strong id="tzDisplay">—</strong>. Changing timezone never changes which shift falls on a calendar date. Shift times are shown as wall-clock times; on the spring-forward night a 12-hour night shift is really 11 hours, and on the fall-back night 13 hours — the date and pattern position do not move.</p>
+    <h3>Counts</h3>
+    <p id="countsRange" class="hint"></p>
+    <dl id="counts" class="counts"></dl>
+    <div class="btnrow">
+      <button type="button" class="btn" id="icsBtn">⬇ Export .ics (add to my calendar)</button>
+      <button type="button" class="btn secondary" id="shareBtn">🔗 Copy share link</button>
+      <button type="button" class="btn secondary" id="printBtn">🖨 Print view</button>
+      <button type="button" class="btn ghost" id="resetBtn">Reset everything</button>
+    </div>
+    <p id="icsMsg" class="hint" role="status"></p>
+    <p id="shareMsg" class="hint" role="status"></p>
+    <p class="hint">No account and no server: your pattern is stored only in this browser (localStorage key <code>shiftcal.v1</code>) and in the share link itself. The tool works fully offline once loaded.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h-cal">
+    <h2 id="h-cal">Your rotation calendar</h2>
+    <div id="calendar"></div>
+  </section>
+
+  <section class="card no-print" aria-labelledby="h-faq">
+    <h2 id="h-faq">Questions</h2>
+    <details><summary>Why do I need an “anchor date” instead of a start date?</summary><p>A start date is easy to misremember. An anchor is a single date you are 100% sure about — for example, “on Tuesday 14th I definitely worked a Night, and that was day 3 of my pattern”. From that one certain fact, the repeating sequence fixes every other date, forwards and backwards, forever.</p></details>
+    <details><summary>How are night shifts counted?</summary><p>A night shift belongs to the date it starts on. If you start at 19:00 on Tuesday and finish at 07:00 on Wednesday, that is Tuesday’s shift in the calendar, the counts, the lookup and the .ics export.</p></details>
+    <details><summary>Will daylight saving time break my calendar?</summary><p>No. Dates here are calculated as calendar days, not as 24-hour chunks of time, so the 23-hour spring day and the 25-hour autumn day cannot skip or double a date. Your shift <em>times</em> stay as wall-clock times; only the real length of that one night changes (11h in spring, 13h in autumn).</p></details>
+    <details><summary>What does the .ics export do?</summary><p>It creates one calendar event per working shift for the months shown, with the correct timezone so events land at the right wall-clock time across daylight-saving changes. Import it into Google Calendar, Apple Calendar or Outlook. Days off are not exported.</p></details>
+    <details><summary>Is my data uploaded anywhere?</summary><p>No. There is no server and no account. Your pattern lives in your browser and in any share link you choose to copy.</p></details>
+  </section>
+
+  <p class="disclaimer" role="note">⚠ Always check against your official roster. Patterns vary by employer, and this tool works only from the pattern and anchor date you enter.</p>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <p><strong>ShiftCal</strong> — a free worker-side rotation calendar. Not employer scheduling software. No account, no manager, no workplace sign-up.</p>
+    <p>Preset calendars: <a href="4-on-4-off.html">4 on / 4 off</a> · <a href="panama-2-2-3.html">Panama / 2-2-3</a> · <a href="dupont.html">DuPont</a> · <a href="continental.html">Continental</a> · <a href="nurse-shift-planner.html">Nurse shift planner</a></p>
+    <p>Always check against your official roster.</p>
+  </div>
+</footer>
+<script src="assets/core.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
