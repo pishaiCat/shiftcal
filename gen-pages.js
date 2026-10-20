@@ -124,7 +124,7 @@ for (const [slug, p] of Object.entries(PAGES)) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${p.h1}</title>
 <meta name="description" content="${p.meta}">
-<link rel="canonical" href="https://example.com/${slug}.html">
+<link rel="canonical" href="https://shiftcal-eta.vercel.app/${slug}.html">
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body data-preset="${p.key}">

@@ -17,8 +17,12 @@ build step, no paid APIs, no login.
 - Local preview: `python3 -m http.server 8099` then open
   http://127.0.0.1:8099/
 
-The only running cost is an optional domain. Replace `https://example.com/`
-in the `<link rel="canonical">` tags once you have one.
+The only running cost is an optional domain. Canonical URLs currently point
+at the Vercel production domain (https://shiftcal-eta.vercel.app/) — update
+them in the HTML files and `gen-pages.js` if you attach a custom domain.
+
+**Live:** https://shiftcal-eta.vercel.app/ · **Repo:** https://github.com/pishaiCat/shiftcal
+(deployed on Vercel as project `shiftcal`, git-linked to `main` — pushes auto-deploy.)
 
 ## Files
 
